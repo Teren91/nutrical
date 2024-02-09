@@ -43,13 +43,15 @@ class HeigthFormState extends State<HeigthForm> {
           //EDAD
           TextFormField(
             decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.person),
-                suffixIcon: const Icon(Icons.clear),
-                labelText: 'Edad',
-                filled: true,
-                constraints: BoxConstraints(
-                    maxHeight: heightComponent * 0.08,
-                    maxWidth: widthComponent * 0.5)),
+              prefixIcon: const Icon(Icons.person),
+              suffixIcon: const Icon(Icons.clear),
+              labelText: 'Edad',
+              filled: true,
+              constraints: BoxConstraints(
+                  maxHeight: heightComponent * 0.08,
+                  maxWidth: widthComponent * 0.5)
+            ),
+            keyboardType: TextInputType.number,
             // The validator receives the text that the user has entered.
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -68,6 +70,7 @@ class HeigthFormState extends State<HeigthForm> {
               labelText: 'Altura de rodilla',
             ),
             controller: _arController,
+            keyboardType: TextInputType.number,
           ),
           TextFormField(
             decoration: const InputDecoration(
@@ -75,6 +78,7 @@ class HeigthFormState extends State<HeigthForm> {
               labelText: 'Altura rodilla-maléolo externo',
             ),
             controller: _lrmController,
+            keyboardType: TextInputType.number,
           ),
           TextFormField(
             decoration: const InputDecoration(
@@ -82,6 +86,7 @@ class HeigthFormState extends State<HeigthForm> {
               labelText: 'Altura por envergadura',
             ),
             controller: _wingSpanController,
+            keyboardType: TextInputType.number,
           ),
          
           Padding(
@@ -91,22 +96,24 @@ class HeigthFormState extends State<HeigthForm> {
                 // Validate returns true if the form is valid, or false otherwise.
                 if (_formKey.currentState!.validate()) {
                   if (_arController.text.isNotEmpty) {
-                    _height = getHeight(widget.isFemale, int.parse(_ageController.text),
+                    _height = getHeight(
+                        widget.isFemale, int.parse(_ageController.text),
                         int.parse(_arController.text));
+
                   } else if (_lrmController.text.isNotEmpty) {
-                    _height = getHeightLRM(widget.isFemale, int.parse(_ageController.text),
+                    _height = getHeightLRM(
+                        widget.isFemale, int.parse(_ageController.text),
                         int.parse(_lrmController.text));
+
                   } else if (_wingSpanController.text.isNotEmpty) {
                     _height = getHeightWingSpan(
                         widget.isFemale, int.parse(_wingSpanController.text));
+
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Introduce una altura')),
                     );
                   }
-                  // ScaffoldMessenger.of(context).showSnackBar(
-                  //   SnackBar(content: Text( (_height).toString())),
-                  // );
                   setState(() {
                     _height = double.parse(_height.toStringAsFixed(2));
                   });
