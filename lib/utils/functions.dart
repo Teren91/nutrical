@@ -21,3 +21,27 @@ double getHeightWingSpan(bool isFamele, int wingSpan) {
     return (1.4 * wingSpan) + 57.8;
   }
 }
+
+double getIMC(double weight, double height) {
+  return weight / (height * height);
+}
+
+String getIMCStatus(double imc) {
+  if (imc < 18.5) {
+    return "Abaixo do peso";
+  } else if (imc < 24.9) {
+    return "Peso normal";
+  } else if (imc < 26.9) {
+    return "Sobrepeso grado I";
+  } else if (imc < 29.9) {
+    return "Sobrepeso grado II (preobesidad)";
+  } else if (imc < 34.9) {
+    return "Obesidad Tipo I";
+  } else if (imc < 39.9) {
+    return "Obesidad Tipo II";
+  } else if (imc < 49.9) {
+    return "Obesidad Tipo III (mórbida)";
+  } else {
+    return "Obesidad Tipo IV (extrema)";
+  }
+}
