@@ -20,11 +20,14 @@ class HeigthFormState extends State<HeigthForm> {
   final _wingSpanController = TextEditingController();
   final _weightController = TextEditingController();
   final _heightController = TextEditingController();
+  final _wristCircumference = TextEditingController();
   double _height = 0;
   bool isFemale = true;
+  bool _showTable = false;
 
   double _imc = 0;
   String _imcStatus = '';
+  double _bodyComplexion = 0;
 
   void _changeGender(bool value) {
     setState(() {
@@ -41,6 +44,27 @@ class HeigthFormState extends State<HeigthForm> {
       return const Icon(Icons.check);
     },
   );
+
+  String? validateHeigth(String? value) {
+    if (value == null || value.isEmpty) {
+      return '*Campo obligatorio';
+    }
+
+    // if (value != null && value.isNotEmpty) {
+    if (int.tryParse(value) == null) {
+      return 'Formato: 160';
+      // }
+    }
+    return null;
+  }
+
+  String? validateWeigth(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter some text';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     double widthComponent = MediaQuery.of(context).size.width;
@@ -76,7 +100,7 @@ class HeigthFormState extends State<HeigthForm> {
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               SizedBox(
-                width: widthComponent * 0.2,
+                width: widthComponent * 0.1,
               ),
               //EDAD
               const SizedBox(width: 12),
@@ -94,7 +118,7 @@ class HeigthFormState extends State<HeigthForm> {
                 // The validator receives the text that the user has entered.
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter some text';
+                    return '*Campo obligatorio';
                   }
                   return null;
                 },
@@ -106,91 +130,120 @@ class HeigthFormState extends State<HeigthForm> {
           const SizedBox(height: 18),
           Row(
             children: [
-              // Text(
-              //   'Talla: $_height',
-              //   style: Theme.of(context).textTheme.headlineLarge,
-              // ),
               // ALTURA
               TextFormField(
                 decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.ballot),
-                    //suffixIcon: const Icon(Icons.clear),
-                    labelText: 'Altura',
-                    //filled: true,
+                    labelText: "Altura",
                     border: const OutlineInputBorder(),
                     constraints: BoxConstraints(
                         maxHeight: heightComponent * 0.08,
                         maxWidth: widthComponent * 0.4)),
                 keyboardType: TextInputType.number,
                 // The validator receives the text that the user has entered.
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
+                // validator: validateHeigth,
+                // onSaved: (value) {
+                //   _heightController = value;
+                // },
                 controller: _heightController,
                 onTap: () {},
               ),
               const SizedBox(width: 12),
+
               // PESO
               TextFormField(
                 decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.ballot),
-                    //suffixIcon: const Icon(Icons.clear),
                     labelText: 'Peso',
-                    //filled: true,
                     border: const OutlineInputBorder(),
                     constraints: BoxConstraints(
                         maxHeight: heightComponent * 0.08,
                         maxWidth: widthComponent * 0.4)),
                 keyboardType: TextInputType.number,
                 // The validator receives the text that the user has entered.
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                  return null;
-                },
+                //  validator: validateWeigth,
+                // onSaved: (value) {
+                //   _weightController = value;
+                // },
                 controller: _weightController,
                 onTap: () {},
               ),
-              const SizedBox(height: 18),
             ],
           ),
           const SizedBox(height: 18),
+
           // DATOS PRECALCULADOS
-          Row(
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'IMC: $_imc',
-                style: Theme.of(context).textTheme.headlineLarge,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(
                 width: 12,
               ),
               Text(
                 ' $_imcStatus',
-                style: Theme.of(context).textTheme.headlineLarge,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
             ],
           ),
-          DataTable(
-              columns: const <DataColumn>[
-                DataColumn(label: Text('IMC')),
-                DataColumn(
-                  label: Text('Clasificación'),
-                )
-              ],
-              rows: imcTable.entries
-                  .map((e) => DataRow(cells: [
-                        DataCell(Text(e.key)),
-                        DataCell(Text(e.value.toString())),
-                      ]))
-                  .toList()),
+          ElevatedButton(
+            onPressed: () {
+              //if (_formKey.currentState!.validate()) {
+              _formKey.currentState!.save();
+
+              if (_heightController.text.isNotEmpty &&
+                  _weightController.text.isNotEmpty) {
+                setState(() {
+                  _imc = double.parse(getIMC(
+                          double.parse(formatDecimal(_weightController.text)),
+                          double.parse(_heightController.text))
+                      .toStringAsFixed(2));
+                  _imcStatus = getIMCStatus(_imc);
+                });
+                // }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text('Introduce una altura y un peso')),
+                );
+              }
+              //  }
+            },
+            child: const Text('Calcular IMC'),
+          ),
+          OutlinedButton.icon(
+            onPressed: () {
+              setState(() {
+                _showTable = !_showTable;
+              });
+            },
+            label: const Text(
+              'Mostrar/Ocultar tabla IMC',
+            ),
+            icon: const Icon(Icons.arrow_drop_down),
+          ),
+          Visibility(
+            visible: _showTable,
+            child: DataTable(
+                columns: const <DataColumn>[
+                  DataColumn(label: Text('IMC')),
+                  DataColumn(
+                    label: Text('Clasificación'),
+                  )
+                ],
+                rows: imcTable.entries
+                    .map((e) => DataRow(cells: [
+                          DataCell(Text(e.key)),
+                          DataCell(Text(e.value.toString())),
+                        ]))
+                    .toList()),
+          ),
 
           const SizedBox(height: 18),
-          
+
           //Altura rodilla
           TextFormField(
             decoration: const InputDecoration(
@@ -222,7 +275,14 @@ class HeigthFormState extends State<HeigthForm> {
             child: ElevatedButton(
               onPressed: () {
                 // Validate returns true if the form is valid, or false otherwise.
-                if (_formKey.currentState!.validate()) {
+                //  if (_formKey.currentState!.validate()) {
+                if (_ageController.text.isEmpty) {
+                  _heightController.text = '';
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Introduce una una edad')),
+                  );
+                } else {
+                  _formKey.currentState!.save();
                   if (_arController.text.isNotEmpty) {
                     _height = getHeight(
                         isFemale,
@@ -242,34 +302,68 @@ class HeigthFormState extends State<HeigthForm> {
                     );
                   }
                   setState(() {
-                    _height = double.parse(_height.toStringAsFixed(2));
-                  });
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Introduce una edad y una altura')),
-                  );
-                }
-
-                if (_heightController.text.isNotEmpty &&
-                    _weightController.text.isNotEmpty) {
-                  setState(() {
-                    _imc = double.parse(getIMC(
-                            double.parse(_weightController.text),
-                            double.parse(_heightController.text))
-                        .toStringAsFixed(2));
-                    _imcStatus = getIMCStatus(_imc);
+                    //_height = double.parse(_height.toStringAsFixed(2));
+                    _heightController.text = _height.toInt().toString();
                   });
                 }
+                // } else {
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     const SnackBar(
+                //         content: Text('Introduce una edad y una altura')),
+                //   );
+                // }
               },
-              child: const Text('Calcular'),
+              child: const Text('Calcular Altura'),
             ),
           ),
-          Image.asset(
-            'assets/images/tallaje.png',
-            width: widthComponent,
-            //height: heightComponent * 0.5,
-            fit: BoxFit.fill,
+          // Image.asset(
+          //   'assets/images/tallaje.png',
+          //   width: widthComponent,
+          //   //height: heightComponent * 0.5,
+          //   fit: BoxFit.fill,
+          // ),
+
+          Text(
+            'Complexión corporal: $_bodyComplexion' ,
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
+          const SizedBox(height: 12,),
+          TextFormField(
+                decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.ballot),
+                    labelText: 'Circunferencia de muñeca',
+                    border: const OutlineInputBorder(),
+                    constraints: BoxConstraints(
+                        maxHeight: heightComponent * 0.08,
+                        maxWidth: widthComponent * 0.4)),
+                keyboardType: TextInputType.number,
+                controller: _wristCircumference,
+                onTap: () {},
+              ),
+              const SizedBox(height: 12,),
+            ElevatedButton(
+            onPressed: () {
+              //if (_formKey.currentState!.validate()) {
+              _formKey.currentState!.save();
+
+              if (_heightController.text.isNotEmpty &&
+                  _wristCircumference.text.isNotEmpty) {
+                setState(() {
+                  _bodyComplexion = double.parse(getBodComplexion(
+                        double.parse(_heightController.text), 
+                        double.parse(_wristCircumference.text)
+                    ).toStringAsFixed(2));
+                });
+                // }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text('Introduce una altura y un circunferencia de muñeca')),
+                );
+              }
+              //  }
+            },
+            child: const Text('Calcular Complexión'),
           ),
         ],
       ),

@@ -1,3 +1,5 @@
+import 'package:nutrical/utils/constants.dart';
+
 double getHeight(bool isFamele, int age, int ar) {
   if (isFamele) {
     return 84.88 - (0.24 * age) + (1.83 * ar);
@@ -23,25 +25,36 @@ double getHeightWingSpan(bool isFamele, int wingSpan) {
 }
 
 double getIMC(double weight, double height) {
+  height = height / 100; //Formatear el peso para que llegue con decimales
   return weight / (height * height);
 }
 
 String getIMCStatus(double imc) {
   if (imc < 18.5) {
-    return "Abaixo do peso";
+    return imcTable.keys.first;
   } else if (imc < 24.9) {
-    return "Peso normal";
+    return imcTable.keys.elementAt(1);
   } else if (imc < 26.9) {
-    return "Sobrepeso grado I";
+    return imcTable.keys.elementAt(2);
   } else if (imc < 29.9) {
-    return "Sobrepeso grado II (preobesidad)";
+    return imcTable.keys.elementAt(3);
   } else if (imc < 34.9) {
-    return "Obesidad Tipo I";
+    return imcTable.keys.elementAt(4);
   } else if (imc < 39.9) {
-    return "Obesidad Tipo II";
+    return imcTable.keys.elementAt(5);
   } else if (imc < 49.9) {
-    return "Obesidad Tipo III (mórbida)";
+    return imcTable.keys.elementAt(6);
   } else {
-    return "Obesidad Tipo IV (extrema)";
+    return imcTable.keys.elementAt(7);
   }
+}
+
+String formatDecimal(String text)
+{
+  return text.replaceAll(',', '.');
+}
+
+double getBodComplexion(double heigth, double wristCircumference)
+{
+  return heigth / wristCircumference;
 }

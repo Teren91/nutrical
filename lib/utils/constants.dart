@@ -10,3 +10,9 @@ const Map<String, dynamic> imcTable = {
   "Obesidad Tipo III (mórbida)": 49.9,
   "Obesidad Tipo IV (extrema)": 50
 };
+
+List<List<dynamic>> bodyComplexionTable = [
+  ['Grande', 10,4, 11],
+  ['Mediana', 9.6, 10.1],
+  ['Pequeña', 9.6, 10.1]
+];
