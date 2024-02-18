@@ -12,7 +12,23 @@ const Map<String, dynamic> imcTable = {
 };
 
 List<List<dynamic>> bodyComplexionTable = [
-  ['Grande', 10,4, 11],
-  ['Mediana', 9.6, 10.1],
-  ['Pequeña', 9.6, 10.1]
+  ['Pequeña', 9.6, 10.1],
+  ['Mediana', 10.4, 11],
+  ['Grande', 10.5, 11.1]
 ];
+
+double getYuhasz(bool isFemale, int fold1, int fold2, int fold3, int fold4,
+  int fold5, int fold6 )
+{
+  if(isFemale)
+  {
+    return 4.56 + ((fold1 + fold2 + fold3 + fold4 + fold5 + fold6) * 0.143);
+  }else{
+    return 3.64 + ((fold1 + fold2 + fold3 + fold4 + fold5 + fold6) * 0.097);
+  }
+}
+
+double getIndexHipWaist(double hip, double waist)
+{
+  return hip/waist;
+}

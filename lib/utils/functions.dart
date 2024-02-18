@@ -58,3 +58,24 @@ double getBodComplexion(double heigth, double wristCircumference)
 {
   return heigth / wristCircumference;
 }
+
+String getBodyComplexionStatus(double bodyComplexion, bool isFemale)
+{
+  if (isFemale){
+    if(bodyComplexion < 9.6){
+      return bodyComplexionTable[0].elementAt(0);
+    }else if(bodyComplexion < 10.4){
+      return bodyComplexionTable[1].elementAt(0);
+    }else{
+      return bodyComplexionTable[2].elementAt(0);
+    }
+  }else{
+    if(bodyComplexion < 10.1){
+      return bodyComplexionTable[0].elementAt(0);
+    }else if(bodyComplexion < 11){
+      return bodyComplexionTable[1].elementAt(0);
+    }else{
+      return bodyComplexionTable[2].elementAt(0);
+    }
+  }
+}

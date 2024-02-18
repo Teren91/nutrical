@@ -24,6 +24,8 @@ class HeigthFormState extends State<HeigthForm> {
   double _height = 0;
   bool isFemale = true;
   bool _showTable = false;
+  //Body complexion
+  bool _showBCTable = false;
 
   double _imc = 0;
   String _imcStatus = '';
@@ -63,6 +65,66 @@ class HeigthFormState extends State<HeigthForm> {
       return 'Please enter some text';
     }
     return null;
+  }
+
+  void updateIMC(double weight, double height) {
+    if (_weightController.text.isNotEmpty) {
+      setState(() {
+        _imc = double.parse(getIMC(weight, height).toStringAsFixed(2));
+        _imcStatus = getIMCStatus(_imc);
+      });
+    }
+  }
+
+  void updateHeight() {
+    if (_ageController.text.isEmpty) {
+      _heightController.text = '';
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Introduce una una edad')),
+      );
+    } else {
+      _formKey.currentState!.save();
+      if (_arController.text.isNotEmpty) {
+        _height = getHeight(isFemale, int.parse(_ageController.text),
+            int.parse(_arController.text));
+      } else if (_lrmController.text.isNotEmpty) {
+        _height = getHeightLRM(isFemale, int.parse(_ageController.text),
+            int.parse(_lrmController.text));
+      } else if (_wingSpanController.text.isNotEmpty) {
+        _height =
+            getHeightWingSpan(isFemale, int.parse(_wingSpanController.text));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Introduce una altura')),
+        );
+      }
+      setState(() {
+        //_height = double.parse(_height.toStringAsFixed(2));
+        _heightController.text = _height.toInt().toString();
+      });
+    }
+  }
+
+  void updateBodyComplexity() {
+    //if (_formKey.currentState!.validate()) {
+    _formKey.currentState!.save();
+
+    if (_heightController.text.isNotEmpty &&
+        _wristCircumference.text.isNotEmpty) {
+      setState(() {
+        _bodyComplexion = double.parse(getBodComplexion(
+                double.parse(_heightController.text),
+                double.parse(_wristCircumference.text))
+            .toStringAsFixed(2));
+      });
+      // }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content:
+                Text('Introduce una altura y un circunferencia de muñeca')),
+      );
+    }
   }
 
   @override
@@ -140,11 +202,10 @@ class HeigthFormState extends State<HeigthForm> {
                         maxHeight: heightComponent * 0.08,
                         maxWidth: widthComponent * 0.4)),
                 keyboardType: TextInputType.number,
-                // The validator receives the text that the user has entered.
-                // validator: validateHeigth,
-                // onSaved: (value) {
-                //   _heightController = value;
-                // },
+                onChanged: (value) {
+                  updateIMC(double.parse(formatDecimal(_weightController.text)),
+                      double.parse(value));
+                },
                 controller: _heightController,
                 onTap: () {},
               ),
@@ -161,10 +222,10 @@ class HeigthFormState extends State<HeigthForm> {
                         maxWidth: widthComponent * 0.4)),
                 keyboardType: TextInputType.number,
                 // The validator receives the text that the user has entered.
-                //  validator: validateWeigth,
-                // onSaved: (value) {
-                //   _weightController = value;
-                // },
+                onChanged: (value) {
+                  updateIMC(double.parse(formatDecimal(value)),
+                      double.parse(_heightController.text));
+                },
                 controller: _weightController,
                 onTap: () {},
               ),
@@ -189,31 +250,31 @@ class HeigthFormState extends State<HeigthForm> {
               ),
             ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              //if (_formKey.currentState!.validate()) {
-              _formKey.currentState!.save();
+          // ElevatedButton(
+          //   onPressed: () {
+          //     //if (_formKey.currentState!.validate()) {
+          //     _formKey.currentState!.save();
 
-              if (_heightController.text.isNotEmpty &&
-                  _weightController.text.isNotEmpty) {
-                setState(() {
-                  _imc = double.parse(getIMC(
-                          double.parse(formatDecimal(_weightController.text)),
-                          double.parse(_heightController.text))
-                      .toStringAsFixed(2));
-                  _imcStatus = getIMCStatus(_imc);
-                });
-                // }
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Introduce una altura y un peso')),
-                );
-              }
-              //  }
-            },
-            child: const Text('Calcular IMC'),
-          ),
+          //     if (_heightController.text.isNotEmpty &&
+          //         _weightController.text.isNotEmpty) {
+          //       setState(() {
+          //         _imc = double.parse(getIMC(
+          //                 double.parse(formatDecimal(_weightController.text)),
+          //                 double.parse(_heightController.text))
+          //             .toStringAsFixed(2));
+          //         _imcStatus = getIMCStatus(_imc);
+          //       });
+          //       // }
+          //     } else {
+          //       ScaffoldMessenger.of(context).showSnackBar(
+          //         const SnackBar(
+          //             content: Text('Introduce una altura y un peso')),
+          //       );
+          //     }
+          //     //  }
+          //   },
+          //   child: const Text('Calcular IMC'),
+          // ),
           OutlinedButton.icon(
             onPressed: () {
               setState(() {
@@ -274,44 +335,7 @@ class HeigthFormState extends State<HeigthForm> {
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: ElevatedButton(
               onPressed: () {
-                // Validate returns true if the form is valid, or false otherwise.
-                //  if (_formKey.currentState!.validate()) {
-                if (_ageController.text.isEmpty) {
-                  _heightController.text = '';
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Introduce una una edad')),
-                  );
-                } else {
-                  _formKey.currentState!.save();
-                  if (_arController.text.isNotEmpty) {
-                    _height = getHeight(
-                        isFemale,
-                        int.parse(_ageController.text),
-                        int.parse(_arController.text));
-                  } else if (_lrmController.text.isNotEmpty) {
-                    _height = getHeightLRM(
-                        isFemale,
-                        int.parse(_ageController.text),
-                        int.parse(_lrmController.text));
-                  } else if (_wingSpanController.text.isNotEmpty) {
-                    _height = getHeightWingSpan(
-                        isFemale, int.parse(_wingSpanController.text));
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Introduce una altura')),
-                    );
-                  }
-                  setState(() {
-                    //_height = double.parse(_height.toStringAsFixed(2));
-                    _heightController.text = _height.toInt().toString();
-                  });
-                }
-                // } else {
-                //   ScaffoldMessenger.of(context).showSnackBar(
-                //     const SnackBar(
-                //         content: Text('Introduce una edad y una altura')),
-                //   );
-                // }
+                updateHeight();
               },
               child: const Text('Calcular Altura'),
             ),
@@ -324,46 +348,72 @@ class HeigthFormState extends State<HeigthForm> {
           // ),
 
           Text(
-            'Complexión corporal: $_bodyComplexion' ,
+            'Complexión corporal: $_bodyComplexion',
             style: Theme.of(context).textTheme.headlineLarge,
           ),
-          const SizedBox(height: 12,),
+          const SizedBox(
+            height: 12,
+          ),
           TextFormField(
-                decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.ballot),
-                    labelText: 'Circunferencia de muñeca',
-                    border: const OutlineInputBorder(),
-                    constraints: BoxConstraints(
-                        maxHeight: heightComponent * 0.08,
-                        maxWidth: widthComponent * 0.4)),
-                keyboardType: TextInputType.number,
-                controller: _wristCircumference,
-                onTap: () {},
-              ),
-              const SizedBox(height: 12,),
-            ElevatedButton(
+            decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.ballot),
+                labelText: 'Circunferencia de muñeca',
+                border: const OutlineInputBorder(),
+                constraints: BoxConstraints(
+                    maxHeight: heightComponent * 0.08,
+                    maxWidth: widthComponent * 0.4)),
+            keyboardType: TextInputType.number,
+            controller: _wristCircumference,
+            onTap: () {},
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          ElevatedButton(
             onPressed: () {
-              //if (_formKey.currentState!.validate()) {
-              _formKey.currentState!.save();
-
-              if (_heightController.text.isNotEmpty &&
-                  _wristCircumference.text.isNotEmpty) {
-                setState(() {
-                  _bodyComplexion = double.parse(getBodComplexion(
-                        double.parse(_heightController.text), 
-                        double.parse(_wristCircumference.text)
-                    ).toStringAsFixed(2));
-                });
-                // }
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Introduce una altura y un circunferencia de muñeca')),
-                );
-              }
+              updateBodyComplexity();
               //  }
             },
             child: const Text('Calcular Complexión'),
+          ),
+          const SizedBox(height: 19),
+          OutlinedButton.icon(
+            onPressed: () {
+              setState(() {
+                _showBCTable = !_showBCTable;
+              });
+            },
+            label: const Text(
+              'Mostrar/Ocultar tabla Complexión corporal',
+            ),
+            icon: const Icon(Icons.arrow_drop_down),
+          ),
+          Visibility(
+            visible: _showBCTable,
+            child: DataTable(
+                columns: const <DataColumn>[
+                  DataColumn(label: Text('Complexión')),
+                  DataColumn(
+                    label: Text('Mujer'),
+                  ),
+                  DataColumn(
+                    label: Text('Hombre'),
+                  )
+                ],
+                rows: bodyComplexionTable
+                    .map((e) => DataRow(cells: [
+                          DataCell(Text(e[0].toString())),
+                          DataCell(Text(e[1].toString())),
+                          DataCell(Text(e[2].toString())),
+                        ]))
+                    .toList()),
+          ),
+
+          const SizedBox(height: 18),
+
+          Text(
+            'Complexión corporal: $_bodyComplexion',
+            style: Theme.of(context).textTheme.headlineLarge,
           ),
         ],
       ),
