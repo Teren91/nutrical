@@ -91,10 +91,23 @@ class HeigthFormState extends State<HeigthForm> {
     return null;
   }
 
-  void updateIMC(double weight, double height) {
-    if (_weightController.text.isNotEmpty) {
+  // void updateIMC(double weight, double height) {
+  //   if (_weightController.text.isNotEmpty &&
+  //         _heightController.text.isNotEmpty) {
+  //     setState(() {
+  //       _imc = double.parse(getIMC(weight, height).toStringAsFixed(2));
+  //       _imcStatus = getIMCStatus(_imc);
+  //     });
+  //   }
+  // }
+
+   void updateIMC() {
+    if (_weightController.text.isNotEmpty &&
+          _heightController.text.isNotEmpty) {
       setState(() {
-        _imc = double.parse(getIMC(weight, height).toStringAsFixed(2));
+        _imc = double.parse(getIMC(
+            double.parse(_weightController.text), 
+            double.parse(_heightController.text)).toStringAsFixed(2));
         _imcStatus = getIMCStatus(_imc);
       });
     }
@@ -240,8 +253,9 @@ class HeigthFormState extends State<HeigthForm> {
                         maxWidth: widthComponent * 0.4)),
                 keyboardType: TextInputType.number,
                 onChanged: (value) => updateIMC(
-                    double.parse(formatDecimal(_weightController.text)),
-                    double.parse(value)),
+                   //double.parse(formatDecimal(_weightController.text)),
+                    //double.parse(value)
+                    ),
                 controller: _heightController,
                 onTap: () {},
               ),
@@ -259,8 +273,9 @@ class HeigthFormState extends State<HeigthForm> {
                 keyboardType: TextInputType.number,
                 // The validator receives the text that the user has entered.
                 onChanged: (value) => updateIMC(
-                    double.parse(formatDecimal(value)),
-                    double.parse(_heightController.text)),
+                    // double.parse(formatDecimal(value)),
+                    // double.parse(_heightController.text)
+                    ),
                 controller: _weightController,
                 onTap: () {},
               ),
@@ -360,6 +375,7 @@ class HeigthFormState extends State<HeigthForm> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: ElevatedButton(
+              key: const ValueKey('btnCalculateHeigth'),
               onPressed: () => updateHeight(),
               child: const Text('Calcular Altura'),
             ),
