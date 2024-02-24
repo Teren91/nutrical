@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nutrical/models/person_data.dart';
-import 'package:nutrical/utils/functions.dart';
-import 'package:provider/provider.dart';
+// import 'package:nutrical/domain/models/person_data.dart';
+// import 'package:provider/provider.dart';
 
 class CalculateWidget extends StatefulWidget {
   const CalculateWidget({super.key});
@@ -16,7 +15,7 @@ class _CalculateWidgetState extends State<CalculateWidget> {
   @override
   Widget build(BuildContext context) {
 
-    final personData = Provider.of<PersonData>(context, listen: false);
+    //final personData = Provider.of<PersonData>(context, listen: false);
     
 
     return ElevatedButton(
@@ -63,10 +62,10 @@ class _CalculateWidgetState extends State<CalculateWidget> {
             //   }
 
              
-                personData.setImc = double.parse(getIMC(
-                        personData.getWeight,
-                        personData.getHeight)
-                    .toStringAsFixed(2));
+                // personData.setImc = double.parse(getIMC(
+                //         personData.getWeight,
+                //         personData.getHeight)
+                //     .toStringAsFixed(2));
               
 
              },

@@ -1,43 +1,45 @@
+import 'package:nutrical/domain/usecases/heigth_calculator.dart';
+import 'package:nutrical/domain/usecases/imc_calculator.dart';
 import 'package:nutrical/utils/functions.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('Calculo de altura', () {
-    test('La altura por longitud de rodilla', () {
-      double height;
-      height = getHeight(false, 32, 55);
 
-      expect(height, 174.01);
+    
+      final HeigthCalculator heigthCalculator = DefaultHeigthCalculator();
+    test('La altura por longitud de rodilla', () {
+
+
+      expect(heigthCalculator.calculateKneeHeight(false, 32, 55), 174.01);
     });
 
     test('La altura por longitud rodilla-maleolo', () {
-      double height;
-      height = getHeightLRM(false, 32, 53);
-      height = height.toInt().toDouble();
-      expect(height, 175);
+      //double height;
+      // height = getHeightLRM(false, 32, 53);
+      // height = height.toInt().toDouble();
+      expect(heigthCalculator.calculatelengthKneeMalleolusHeigth(false, 32, 53).toInt().toDouble(), 175);
     });
 
     test('La altura por ennvergadura', () {
-      double height;
-      height = getHeightWingSpan(false, 84);
+      // double height;
+      // height = getHeightWingSpan(false, 84);
 
-      expect(height.toInt(), 175);
+      expect(heigthCalculator.calculateWingSpanHeigth(false, 84).toInt(), 175);
     });
   });
 
   group('Calculo IMC', () {
-    test('IMC', () {
-      double imc;
-      imc = getIMC(59.1, 175);
+    test('IMC', () {  
+      IMCCalculator imcCalculator = DefaultIMCCalculator();
 
-      expect(imc.toStringAsFixed(2), formatDecimal('19.30') );
+      expect(imcCalculator.calculateIMC(59.1, 1.75).toStringAsFixed(2), formatDecimal('19.30') );
     });
 
     test('Estado IMC', () {
-      String imcStatus;
-      imcStatus = getIMCStatus(19.30);
+       IMCStatusCalculator imcStatusCalculator = DefaultIMCStatusCalculator();
 
-      expect(imcStatus, 'Peso normal');
+      expect(imcStatusCalculator.getIMCStatus(19.30), 'Peso normal');
     });
   });
 }

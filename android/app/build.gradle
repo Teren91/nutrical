@@ -29,7 +29,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace "com.nutrical.nutrical"
+    namespace "com.example.nutrical"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 

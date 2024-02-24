@@ -1,7 +1,10 @@
 // Create a Form widget.
 import 'package:flutter/material.dart';
+import 'package:nutrical/domain/usecases/body_complexion.dart';
+import 'package:nutrical/domain/usecases/body_composition.dart';
+import 'package:nutrical/domain/usecases/heigth_calculator.dart';
+import 'package:nutrical/domain/usecases/imc_calculator.dart';
 import 'package:nutrical/utils/constants.dart';
-import 'package:nutrical/utils/functions.dart';
 
 import 'text_form_field_widget.dart';
 
@@ -15,6 +18,17 @@ class HeigthForm extends StatefulWidget {
 }
 
 class HeigthFormState extends State<HeigthForm> {
+  HeigthFormState();
+
+  final IMCCalculator imcCalculator = DefaultIMCCalculator();
+  final IMCStatusCalculator imcStatusCalculator = DefaultIMCStatusCalculator();
+  final BodyCompositionCalculator bodyCompositionCalculator =
+      DefaultBodyCompositionCalculator();
+  final BodyComplexionCalculator bodyComplexionCalculator =
+      DefaultComplexionCalculator();
+
+  final HeigthCalculator heigthCalculator = DefaultHeigthCalculator();
+
   final _formKey = GlobalKey<FormState>();
   final _ageController = TextEditingController();
   final _arController = TextEditingController();
@@ -46,13 +60,6 @@ class HeigthFormState extends State<HeigthForm> {
   double _bodyComposition = 0;
 
   bool _showFolds = false;
-  final int _fold1 = 0;
-  final int _fold2 = 0;
-  final int _fold3 = 0;
-  final int _fold4 = 0;
-  final int _fold5 = 0;
-  final int _fold6 = 0;
-
   double _iac = 0; //Index abdomen-hips
 
   void _changeGender(bool value) {
@@ -91,24 +98,15 @@ class HeigthFormState extends State<HeigthForm> {
     return null;
   }
 
-  // void updateIMC(double weight, double height) {
-  //   if (_weightController.text.isNotEmpty &&
-  //         _heightController.text.isNotEmpty) {
-  //     setState(() {
-  //       _imc = double.parse(getIMC(weight, height).toStringAsFixed(2));
-  //       _imcStatus = getIMCStatus(_imc);
-  //     });
-  //   }
-  // }
-
-   void updateIMC() {
+  void updateIMC(String? value) {
     if (_weightController.text.isNotEmpty &&
-          _heightController.text.isNotEmpty) {
+        _heightController.text.isNotEmpty) {
       setState(() {
-        _imc = double.parse(getIMC(
-            double.parse(_weightController.text), 
-            double.parse(_heightController.text)).toStringAsFixed(2));
-        _imcStatus = getIMCStatus(_imc);
+        double formatHeigth = double.parse(_heightController.text) / 100;
+
+        _imc = imcCalculator.calculateIMC(
+            double.parse(_weightController.text), formatHeigth);
+        _imcStatus = imcStatusCalculator.getIMCStatus(_imc);
       });
     }
   }
@@ -122,14 +120,14 @@ class HeigthFormState extends State<HeigthForm> {
     } else {
       _formKey.currentState!.save();
       if (_arController.text.isNotEmpty) {
-        _height = getHeight(_isFemale, int.parse(_ageController.text),
-            int.parse(_arController.text));
+        _height = heigthCalculator.calculateKneeHeight(_isFemale,
+            int.parse(_ageController.text), int.parse(_arController.text));
       } else if (_lrmController.text.isNotEmpty) {
-        _height = getHeightLRM(_isFemale, int.parse(_ageController.text),
-            int.parse(_lrmController.text));
+        _height = heigthCalculator.calculatelengthKneeMalleolusHeigth(_isFemale,
+            int.parse(_ageController.text), int.parse(_lrmController.text));
       } else if (_wingSpanController.text.isNotEmpty) {
-        _height =
-            getHeightWingSpan(_isFemale, int.parse(_wingSpanController.text));
+        _height = heigthCalculator.calculateWingSpanHeigth(
+            _isFemale, int.parse(_wingSpanController.text));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Introduce una altura')),
@@ -149,10 +147,10 @@ class HeigthFormState extends State<HeigthForm> {
     if (_heightController.text.isNotEmpty &&
         _wristCircumference.text.isNotEmpty) {
       setState(() {
-        _bodyComplexion = double.parse(getBodyComplexion(
-                double.parse(_heightController.text),
+        _bodyComplexion = bodyComplexionCalculator
+            .calculateBodyComplexion(double.parse(_heightController.text),
                 double.parse(_wristCircumference.text))
-            .toStringAsFixed(2));
+            .toStringAsFixed(2);
       });
       // }
     } else {
@@ -164,23 +162,30 @@ class HeigthFormState extends State<HeigthForm> {
     }
   }
 
-  void updateBodyComposition() {
+  void updateBodyComposition(String? value) {
     setState(() {
       if (_waistCircunference.text.isNotEmpty &&
           _hipsCircumference.text.isNotEmpty) {
-        _iac = double.parse(getIndexHipWaist(
-                double.parse(_hipsCircumference.text),
+        _iac = bodyCompositionCalculator
+            .calculateIndexHipWaist(double.parse(_hipsCircumference.text),
                 double.parse(_waistCircunference.text))
-            .toStringAsFixed(2));
+            .toStringAsFixed(2);
       }
     });
   }
 
   void updateBodyCompositionYuhasz() {
     setState(() {
-      _bodyComposition = double.parse(
-          getYuhasz(_isFemale, _fold1, _fold2, _fold3, _fold4, _fold5, _fold6)
-              .toStringAsFixed(2));
+      _bodyComposition = bodyCompositionCalculator
+          .calculateYuhasz(
+              _isFemale,
+              int.parse(_fold1Controller.text),
+              int.parse(_fold2Controller.text),
+              int.parse(_fold3Controller.text),
+              int.parse(_fold4Controller.text),
+              int.parse(_fold5Controller.text),
+              int.parse(_fold6Controller.text))
+          .toStringAsFixed(2);
     });
   }
 
@@ -222,12 +227,12 @@ class HeigthFormState extends State<HeigthForm> {
               //EDAD
               const SizedBox(width: 14),
               TextFormFieldWidget(
-                lrmController: _ageController,
                 label: 'Edad',
                 hintText: 'Longitud en cm',
                 width: widthComponent * 0.4,
                 height: heightComponent * 0.08,
                 icon: const Icon(Icons.person),
+                controller: _ageController,
               ),
             ],
           ),
@@ -235,53 +240,30 @@ class HeigthFormState extends State<HeigthForm> {
           Row(
             children: [
               // ALTURA
-              // TextFormFieldWidget(
-              //     lrmController: _ageController,
-              //     label: 'Altura',
-              //     hintText: 'Longitud en cm',
-              //     width: widthComponent * 0.4,
-              //     height: heightComponent * 0.08,
-              //     icon: const Icon(Icons.ballot)
-              //   ),
-              TextFormField(
-                decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.ballot),
-                    labelText: "Altura",
-                    border: const OutlineInputBorder(),
-                    constraints: BoxConstraints(
-                        maxHeight: heightComponent * 0.08,
-                        maxWidth: widthComponent * 0.4)),
-                keyboardType: TextInputType.number,
-                onChanged: (value) => updateIMC(
-                   //double.parse(formatDecimal(_weightController.text)),
-                    //double.parse(value)
-                    ),
+              TextFormFieldWidget(
+                label: 'Altura',
+                hintText: 'Longitud en cm',
+                width: widthComponent * 0.4,
+                height: heightComponent * 0.08,
+                icon: const Icon(Icons.ballot),
+                onChanged: updateIMC,
                 controller: _heightController,
-                onTap: () {},
               ),
               const SizedBox(width: 12),
 
               // PESO
-              TextFormField(
-                decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.ballot),
-                    labelText: 'Peso',
-                    border: const OutlineInputBorder(),
-                    constraints: BoxConstraints(
-                        maxHeight: heightComponent * 0.08,
-                        maxWidth: widthComponent * 0.4)),
-                keyboardType: TextInputType.number,
-                // The validator receives the text that the user has entered.
-                onChanged: (value) => updateIMC(
-                    // double.parse(formatDecimal(value)),
-                    // double.parse(_heightController.text)
-                    ),
+              TextFormFieldWidget(
+                label: 'Peso',
+                hintText: 'Peso',
+                icon: const Icon(Icons.ballot),
+                width: widthComponent * 0.4,
+                height: heightComponent * 0.08,
+                onChanged: updateIMC,
                 controller: _weightController,
-                onTap: () {},
               ),
             ],
           ),
-          // const SizedBox(height: 18),
+          const SizedBox(height: 12),
 
           // DATOS PRECALCULADOS
           Column(
@@ -300,31 +282,7 @@ class HeigthFormState extends State<HeigthForm> {
               ),
             ],
           ),
-          // ElevatedButton(
-          //   onPressed: () {
-          //     //if (_formKey.currentState!.validate()) {
-          //     _formKey.currentState!.save();
 
-          //     if (_heightController.text.isNotEmpty &&
-          //         _weightController.text.isNotEmpty) {
-          //       setState(() {
-          //         _imc = double.parse(getIMC(
-          //                 double.parse(formatDecimal(_weightController.text)),
-          //                 double.parse(_heightController.text))
-          //             .toStringAsFixed(2));
-          //         _imcStatus = getIMCStatus(_imc);
-          //       });
-          //       // }
-          //     } else {
-          //       ScaffoldMessenger.of(context).showSnackBar(
-          //         const SnackBar(
-          //             content: Text('Introduce una altura y un peso')),
-          //       );
-          //     }
-          //     //  }
-          //   },
-          //   child: const Text('Calcular IMC'),
-          // ),
           OutlinedButton.icon(
             onPressed: () {
               setState(() {
@@ -357,17 +315,17 @@ class HeigthFormState extends State<HeigthForm> {
 
           //Altura rodilla
           TextFormFieldWidget(
-              lrmController: _arController,
+              controller: _arController,
               label: 'Altura de rodilla',
               hintText: 'Altura en cm',
               icon: const Icon(Icons.ballot)),
           TextFormFieldWidget(
-              lrmController: _lrmController,
+              controller: _lrmController,
               label: 'Altura rodilla-maléolo externo',
               hintText: 'Longitud en cm',
               icon: const Icon(Icons.ballot)),
           TextFormFieldWidget(
-              lrmController: _wingSpanController,
+              controller: _wingSpanController,
               label: 'Altura por envergadura',
               hintText: 'Longitud en cm',
               icon: const Icon(Icons.ballot)),
@@ -380,12 +338,6 @@ class HeigthFormState extends State<HeigthForm> {
               child: const Text('Calcular Altura'),
             ),
           ),
-          // Image.asset(
-          //   'assets/images/tallaje.png',
-          //   width: widthComponent,
-          //   //height: heightComponent * 0.5,
-          //   fit: BoxFit.fill,
-          // ),
 
           //BODY COMPLEXION
           Text(
@@ -395,27 +347,25 @@ class HeigthFormState extends State<HeigthForm> {
           const SizedBox(
             height: 12,
           ),
-          TextFormField(
-            decoration: const InputDecoration(
-              prefixIcon: Icon(Icons.ballot),
-              labelText: 'Circunferencia de muñeca',
-              border: OutlineInputBorder(),
-              // constraints: BoxConstraints(
-              //     maxHeight: heightComponent * 0.08,
-              //     maxWidth: widthComponent * 0.4)
-            ),
-            keyboardType: TextInputType.number,
+
+          TextFormFieldWidget(
+            label: 'Muñeca circunferencia',
+            hintText: 'Longitud en mm',
+            icon: const Icon(Icons.ballot),
+            width: widthComponent * 0.4,
+            height: heightComponent * 0.08,
+            onChanged: updateBodyComposition,
             controller: _wristCircumference,
-            onChanged: (value) => updateBodyComposition(),
           ),
-          const SizedBox(
-            height: 12,
-          ),
+
+          const SizedBox(height: 12),
+
           ElevatedButton(
             onPressed: () => updateBodyComplexity(),
             child: const Text('Calcular Complexión'),
           ),
           const SizedBox(height: 19),
+
           OutlinedButton.icon(
             onPressed: () {
               setState(() {
@@ -476,57 +426,57 @@ class HeigthFormState extends State<HeigthForm> {
                 Row(
                   children: [
                     TextFormFieldWidget(
-                      lrmController: _fold1Controller,
                       label: 'Tríceps',
                       hintText: 'Longitud en mm',
                       width: widthComponent * 0.4,
                       height: heightComponent * 0.08,
+                      controller: _fold1Controller,
                     ),
                     const SizedBox(width: 12),
                     TextFormFieldWidget(
-                      lrmController: _fold2Controller,
                       label: 'Subescapular',
                       hintText: 'Longitud en mm',
                       width: widthComponent * 0.4,
                       height: heightComponent * 0.08,
+                      controller: _fold2Controller,
                     ),
                   ],
                 ),
                 Row(
                   children: [
                     TextFormFieldWidget(
-                      lrmController: _fold3Controller,
                       label: 'Suprailíaco',
                       hintText: 'Longitud en mm',
                       width: widthComponent * 0.4,
                       height: heightComponent * 0.08,
+                      controller: _fold3Controller,
                     ),
                     const SizedBox(width: 12),
                     TextFormFieldWidget(
-                      lrmController: _fold4Controller,
                       label: 'Abdominal',
                       hintText: 'Longitud en mm',
                       width: widthComponent * 0.4,
                       height: heightComponent * 0.08,
+                      controller: _fold4Controller,
                     ),
                   ],
                 ),
                 Row(
                   children: [
                     TextFormFieldWidget(
-                      lrmController: _fold5Controller,
                       label: 'Pliege muslo anterior',
                       hintText: 'Longitud en mm',
                       width: widthComponent * 0.4,
                       height: heightComponent * 0.08,
+                      controller: _fold5Controller,
                     ),
                     const SizedBox(width: 12),
                     TextFormFieldWidget(
-                      lrmController: _fold6Controller,
                       label: 'Pliege pierna',
                       hintText: 'Longitud en mm',
                       width: widthComponent * 0.4,
                       height: heightComponent * 0.08,
+                      controller: _fold6Controller,
                     ),
                   ],
                 ),
@@ -549,30 +499,22 @@ class HeigthFormState extends State<HeigthForm> {
           const SizedBox(height: 12),
           Row(
             children: [
-              TextFormField(
-                decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.ballot),
-                    labelText: 'abdomen circunferencia',
-                    border: const OutlineInputBorder(),
-                    constraints: BoxConstraints(
-                        maxHeight: heightComponent * 0.08,
-                        maxWidth: widthComponent * 0.4)),
-                keyboardType: TextInputType.number,
+              TextFormFieldWidget(
+                label: 'Abdomen circunferencia',
+                hintText: 'Longitud en cm',
+                width: widthComponent * 0.4,
+                height: heightComponent * 0.08,
+                onChanged: updateBodyComposition,
                 controller: _waistCircunference,
-                onChanged: (value) => updateBodyComposition(),
               ),
               const SizedBox(width: 12),
-              TextFormField(
-                decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.ballot),
-                    labelText: 'cadera circunferencia',
-                    border: const OutlineInputBorder(),
-                    constraints: BoxConstraints(
-                        maxHeight: heightComponent * 0.08,
-                        maxWidth: widthComponent * 0.4)),
-                keyboardType: TextInputType.number,
+              TextFormFieldWidget(
+                label: 'Cadera circunferencia',
+                hintText: 'Longitud en cm',
+                width: widthComponent * 0.4,
+                height: heightComponent * 0.08,
+                onChanged: updateBodyComposition,
                 controller: _hipsCircumference,
-                onChanged: (value) => updateBodyComposition(),
               ),
             ],
           ),

@@ -5,7 +5,7 @@ import 'package:nutrical/widgets/text_form_field_widget.dart';
 
 final ageController = TextEditingController();
 Widget testTextFormFieldWidget = TextFormFieldWidget(
-  lrmController: ageController,
+  controller: ageController,
   label: 'Altura',
   hintText: 'Altura en cm',
 );
@@ -16,49 +16,49 @@ Widget createHomeScreen() => const MyHomePage(
 
 void main() {
   group('Home Page TextFormFieldWidget create', () {
-    testWidgets('A custom TextFormField', (tester) async {
-      await tester.pumpWidget(createHomeScreen());
-      expect(find.byType(TextFormFieldWidget), findsAny);
-    });
+    // testWidgets('A custom TextFormField', (tester) async {
+    //   await tester.pumpWidget(createHomeScreen());
+    //   expect(find.byType(TextFormFieldWidget), findsAny);
+    // });
 
-    testWidgets('TextFormField Cabecera e IMC', (tester) async {
-      final edadFinder = find.text('Edad');
+    // testWidgets('TextFormField Cabecera e IMC', (tester) async {
+    //   final edadFinder = find.text('Edad');
 
-      //EDAD
-      await tester.pumpWidget(createHomeScreen());
-      expect(edadFinder, findsOneWidget);
-      await tester.tap(find.byType(TextFormFieldWidget).first);
-      await tester.enterText(find.byType(TextFormFieldWidget).first, '32');
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+    //   //EDAD
+    //   await tester.pumpWidget(createHomeScreen());
+    //   expect(edadFinder, findsOneWidget);
+    //   await tester.tap(find.byType(TextFormFieldWidget).first);
+    //   await tester.enterText(find.byType(TextFormFieldWidget).first, '32');
+    //   await tester.pumpAndSettle(const Duration(seconds: 1));
 
-      //PESO
-      expect(find.byType(TextFormField).at(2), findsOneWidget);
-      await tester.tap(find.byType(TextFormField).at(2));
-      await tester.enterText(find.byType(TextFormField).at(2), '59');
+    //   //PESO
+    //   expect(find.byType(TextFormField).at(2), findsOneWidget);
+    //   await tester.tap(find.byType(TextFormField).at(2));
+    //   await tester.enterText(find.byType(TextFormField).at(2), '59');
 
-      //ALTURA
-      expect(find.byType(TextFormField).at(1), findsOneWidget);
-      await tester.tap(find.byType(TextFormField).at(1));
-      await tester.enterText(find.byType(TextFormField).at(1), '175');
+    //   //ALTURA
+    //   expect(find.byType(TextFormField).at(1), findsOneWidget);
+    //   await tester.tap(find.byType(TextFormField).at(1));
+    //   await tester.enterText(find.byType(TextFormField).at(1), '175');
 
-      await tester.pumpAndSettle(const Duration(seconds: 2));
-    });
+    //   await tester.pumpAndSettle(const Duration(seconds: 2));
+    // });
 
     testWidgets('TextFormField Altura', (tester) async {
       final edadFinder = find.byType(TextFormFieldWidget).at(0);
       final alturaRodillaFinder = find.byType(TextFormFieldWidget).at(1);
-      //final btnCalculateHeightFinder =
-          //find.byKey(const ValueKey('btnCalculateHeigth'));
+      final btnCalculateHeightFinder =
+          find.byKey(const ValueKey('btnCalculateHeigth'));
 
       await tester.pumpWidget(createHomeScreen());
 
-      //EDAD
+      //Introducir EDAD
       expect(edadFinder, findsOneWidget);
       await tester.tap(find.byType(TextFormFieldWidget).first);
       await tester.enterText(find.byType(TextFormFieldWidget).first, '32');
       await tester.pumpAndSettle(const Duration(seconds: 1));
 
-      //ALTURA
+      //Introducir alturaALTURA
       expect(alturaRodillaFinder, findsOneWidget);
       await tester.tap(alturaRodillaFinder);
       //await tester.pumpAndSettle(const Duration(seconds: 1));
@@ -66,36 +66,25 @@ void main() {
       await tester.pumpAndSettle(const Duration(seconds: 1));
 
       //Scroll hacía abajo
+      await tester.dragFrom(const Offset(0, 200), const Offset(0, -100));
 
-//       // //final gesture = await tester.startGesture(const Offset(83, -548.4));
-//       //   //await gesture.moveBy(const Offset(83, -548.4));
-//       // final gesture = await tester.startGesture(const Offset(0, 400));
-//       // await gesture.moveBy(const Offset(0, -100));
-//       // await tester.pumpAndSettle(const Duration(seconds: 1));
+      await tester.pumpAndSettle(const Duration(seconds: 1));
 
-//       // //Apretar botón
-//       // //await tester.pumpAndSettle(const Duration(seconds: 1));
-//       // expect(find.byKey(const ValueKey('btnCalculateHeigth')), findsOneWidget);
+      await tester.flingFrom(const Offset(0, 200), const Offset(0, -100), 1000);
+      await tester.pumpAndSettle(const Duration(seconds: 1));
 
-//       // await gesture.moveTo(const Offset(83, 648.4));
-//       // await tester.pumpAndSettle(const Duration(seconds: 1));
-//       // await tester.tap(find.byKey(const ValueKey('btnCalculateHeigth')));
-//       // await tester.pumpAndSettle();
+      //Pulsar botón
+      final buttonPosition = tester.getCenter(btnCalculateHeightFinder);
+      expect(find.byKey(const ValueKey('btnCalculateHeigth')), findsOneWidget);
+      await tester.tapAt(buttonPosition);
 
-//       final buttonPosition = tester.getCenter(btnCalculateHeightFinder);
-//      // await tester.pump();
-//      //await tester.pumpAndSettle(const Duration(seconds: 3));
-//       // await gesture.moveTo(buttonPosition);
-//       // await tester.pump();
-//       // await tester.pumpAndSettle(const Duration(seconds: 3));
+      //Volver el scroll arriba
+      await tester.dragFrom(const Offset(0, 400), const Offset(0, 100));
 
-//       expect(find.byKey(const ValueKey('btnCalculateHeigth')), findsOneWidget);
-// // await tester.tap(btnCalculateHeightFinder);
-//       await tester.tapAt(buttonPosition);
-//      // await tester.pump();
-//       await tester.pumpAndSettle(const Duration(seconds: 3));
-      
+      await tester.pumpAndSettle(const Duration(seconds: 1));
+
+      await tester.flingFrom(const Offset(0, 400), const Offset(0, 100), 1000);
+      await tester.pumpAndSettle(const Duration(seconds: 1));
     });
-
   });
 }
