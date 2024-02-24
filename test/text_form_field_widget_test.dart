@@ -16,45 +16,43 @@ Widget createHomeScreen() => const MyHomePage(
 
 void main() {
   group('Home Page TextFormFieldWidget create', () {
-    // testWidgets('A custom TextFormField', (tester) async {
-    //   await tester.pumpWidget(createHomeScreen());
-    //   expect(find.byType(TextFormFieldWidget), findsAny);
-    // });
+    testWidgets('A custom TextFormField', (tester) async {
+      await tester.pumpWidget(createHomeScreen());
+      expect(find.byType(TextFormFieldWidget), findsAny);
+    });
 
-    // testWidgets('TextFormField Cabecera e IMC', (tester) async {
-    //   final edadFinder = find.text('Edad');
+    testWidgets('TextFormField Cabecera e IMC', (tester) async {
+      final edadFinder = find.text('Edad');
 
-    //   await tester.pumpWidget(createHomeScreen());
-    //   expect(edadFinder, findsOneWidget);
-    //   await tester.tap(find.byType(TextFormFieldWidget).first);
-    //   await tester.enterText(find.byType(TextFormFieldWidget).first, '32');
-    //   await tester.pumpAndSettle(const Duration(seconds: 1));
+      //EDAD
+      await tester.pumpWidget(createHomeScreen());
+      expect(edadFinder, findsOneWidget);
+      await tester.tap(find.byType(TextFormFieldWidget).first);
+      await tester.enterText(find.byType(TextFormFieldWidget).first, '32');
+      await tester.pumpAndSettle(const Duration(seconds: 1));
 
-    //   expect(find.byType(TextFormField).at(2), findsOneWidget);
-    //   //await tester.pumpAndSettle(const Duration(seconds: 1));
-    //   await tester.tap(find.byType(TextFormField).at(2));
-    //   //await tester.pumpAndSettle(const Duration(seconds: 1));
-    //   await tester.enterText(find.byType(TextFormField).at(2), '59');
-    //   //await tester.pumpAndSettle(const Duration(seconds: 1));
+      //PESO
+      expect(find.byType(TextFormField).at(2), findsOneWidget);
+      await tester.tap(find.byType(TextFormField).at(2));
+      await tester.enterText(find.byType(TextFormField).at(2), '59');
 
-    //   expect(find.byType(TextFormField).at(1), findsOneWidget);
-    //   //await tester.pumpAndSettle(const Duration(seconds: 1));
-    //   await tester.tap(find.byType(TextFormField).at(1));
-    //   //await tester.pumpAndSettle(const Duration(seconds: 1));
-    //   await tester.enterText(find.byType(TextFormField).at(1), '175');
+      //ALTURA
+      expect(find.byType(TextFormField).at(1), findsOneWidget);
+      await tester.tap(find.byType(TextFormField).at(1));
+      await tester.enterText(find.byType(TextFormField).at(1), '175');
 
-    //   await tester.pumpAndSettle(const Duration(seconds: 2));
-    // });
+      await tester.pumpAndSettle(const Duration(seconds: 2));
+    });
 
     testWidgets('TextFormField Altura', (tester) async {
       final edadFinder = find.byType(TextFormFieldWidget).at(0);
       final alturaRodillaFinder = find.byType(TextFormFieldWidget).at(1);
-      final btnCalculateHeightFinder =
-          find.byKey(const ValueKey('btnCalculateHeigth'));
+      //final btnCalculateHeightFinder =
+          //find.byKey(const ValueKey('btnCalculateHeigth'));
 
       await tester.pumpWidget(createHomeScreen());
 
-      //PESO
+      //EDAD
       expect(edadFinder, findsOneWidget);
       await tester.tap(find.byType(TextFormFieldWidget).first);
       await tester.enterText(find.byType(TextFormFieldWidget).first, '32');
