@@ -106,6 +106,7 @@ class HeigthFormState extends State<HeigthForm> {
 
         _imc = imcCalculator.calculateIMC(
             double.parse(_weightController.text), formatHeigth);
+        _imc = double.parse(_imc.toStringAsFixed(2));
         _imcStatus = imcStatusCalculator.getIMCStatus(_imc);
       });
     }
@@ -127,7 +128,7 @@ class HeigthFormState extends State<HeigthForm> {
             int.parse(_ageController.text), int.parse(_lrmController.text));
       } else if (_wingSpanController.text.isNotEmpty) {
         _height = heigthCalculator.calculateWingSpanHeigth(
-            _isFemale, int.parse(_wingSpanController.text));
+            int.parse(_wingSpanController.text));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Introduce una altura')),
@@ -136,6 +137,7 @@ class HeigthFormState extends State<HeigthForm> {
       setState(() {
         //_height = double.parse(_height.toStringAsFixed(2));
         _heightController.text = _height.toInt().toString();
+        updateIMC(null);
       });
     }
   }

@@ -2,7 +2,8 @@ abstract class HeigthCalculator {
   calculateKneeHeight(bool isFemale, int age, int kneeHeight);
   calculatelengthKneeMalleolusHeigth(
       bool isFemale, int age, int lengthKneeMalleolus);
-  calculateWingSpanHeigth(bool isFemale, int wingSpan);
+  calculateWingSpanHeigth(int wingSpan);
+  calculateSemiWingSpanHeigth(bool isFemale, int wingSpan);
 }
 
 class DefaultHeigthCalculator implements HeigthCalculator {
@@ -26,7 +27,11 @@ class DefaultHeigthCalculator implements HeigthCalculator {
   }
 
   @override
-  calculateWingSpanHeigth(bool isFemale, int wingSpan) {
+  double calculateWingSpanHeigth(int wingSpan) {
+    return wingSpan.toDouble();
+  }
+  @override
+  calculateSemiWingSpanHeigth(bool isFemale, int wingSpan) {
     if (isFemale) {
       return (1.35 * wingSpan) + 60.1;
     } else {

@@ -25,7 +25,7 @@ void main() {
       // double height;
       // height = getHeightWingSpan(false, 84);
 
-      expect(heigthCalculator.calculateWingSpanHeigth(false, 84).toInt(), 175);
+      expect(heigthCalculator.calculateWingSpanHeigth(84).toInt(), 175);
     });
   });
 
