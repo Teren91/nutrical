@@ -5,11 +5,14 @@ import 'package:nutrical/domain/usecases/body_composition.dart';
 import 'package:nutrical/domain/usecases/heigth_calculator.dart';
 import 'package:nutrical/domain/usecases/imc_calculator.dart';
 import 'package:nutrical/utils/constants.dart';
+import 'package:nutrical/widgets/navigation_bar.dart';
 
 import 'text_form_field_widget.dart';
 
 class HeigthForm extends StatefulWidget {
-  const HeigthForm({super.key});
+  const HeigthForm({super.key, required this.title});
+
+  final String title;
 
   @override
   HeigthFormState createState() {
@@ -61,6 +64,21 @@ class HeigthFormState extends State<HeigthForm> {
 
   bool _showFolds = false;
   double _iac = 0; //Index abdomen-hips
+
+  List<BottomNavigationBarItem> bottomNavigationBarItems = [
+    const BottomNavigationBarItem(
+      icon: Icon(Icons.home),
+      label: 'Home'
+    ),
+    const BottomNavigationBarItem(
+      icon: Icon(Icons.task),
+      label: 'Fórmulas'
+    ),
+    const BottomNavigationBarItem(
+      icon: Icon(Icons.chat),
+      label: 'Chat'
+    ),
+  ];
 
   void _changeGender(bool value) {
     setState(() {
@@ -198,337 +216,346 @@ class HeigthFormState extends State<HeigthForm> {
 
     return Material(
       
-      child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 18),
-                Row(
-                  children: [
-                    Text(
-                      'M',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    Switch(
-                      value: _isFemale,
-                      thumbIcon: thumbIcon,
-                      activeColor: Theme.of(context).colorScheme.primary,
-                      inactiveThumbColor: Theme.of(context).colorScheme.primary,
-                      activeTrackColor:
-                          Theme.of(context).colorScheme.primary.withOpacity(0.5),
-                      inactiveTrackColor:
-                          Theme.of(context).colorScheme.primary.withOpacity(0.5),
-                      //inactiveThumbImage: Icon(Icons.thumb_up),
-                      onChanged: (bool value) => _changeGender(value),
-                    ),
-                    Text(
-                      'F',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    SizedBox(
-                      width: widthComponent * 0.1,
-                    ),
-                    //EDAD
-                    const SizedBox(width: 14),
-                    TextFormFieldWidget(
-                      label: 'Edad',
-                      hintText: 'Longitud en cm',
-                      width: widthComponent * 0.4,
-                      height: heightComponent * 0.08,
-                      icon: const Icon(Icons.person),
-                      controller: _ageController,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 18),
-                Row(
-                  children: [
-                    // ALTURA
-                    TextFormFieldWidget(
-                      label: 'Altura',
-                      hintText: 'Longitud en cm',
-                      width: widthComponent * 0.4,
-                      height: heightComponent * 0.08,
-                      icon: const Icon(Icons.ballot),
-                      onChanged: updateIMC,
-                      controller: _heightController,
-                    ),
-                    const SizedBox(width: 12),
-                    
-                    // PESO
-                    TextFormFieldWidget(
-                      label: 'Peso',
-                      hintText: 'Peso',
-                      icon: const Icon(Icons.ballot),
-                      width: widthComponent * 0.4,
-                      height: heightComponent * 0.08,
-                      onChanged: updateIMC,
-                      controller: _weightController,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                    
-                // DATOS PRECALCULADOS
-                Column(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'IMC: $_imc',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    const SizedBox(
-                      width: 12,
-                    ),
-                    Text(
-                      ' $_imcStatus',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                  ],
-                ),
-                    
-                OutlinedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      _showTable = !_showTable;
-                    });
-                  },
-                  label: const Text(
-                    'Mostrar/Ocultar tabla IMC',
-                  ),
-                  icon: const Icon(Icons.arrow_drop_down),
-                ),
-                Visibility(
-                  visible: _showTable,
-                  child: DataTable(
-                      columns: const <DataColumn>[
-                        DataColumn(label: Text('IMC')),
-                        DataColumn(
-                          label: Text('Clasificación'),
-                        )
-                      ],
-                      rows: imcTable.entries
-                          .map((e) => DataRow(cells: [
-                                DataCell(Text(e.key)),
-                                DataCell(Text(e.value.toString())),
-                              ]))
-                          .toList()),
-                ),
-                    
-                const SizedBox(height: 12),
-                    
-                //Altura rodilla
-                TextFormFieldWidget(
-                    controller: _arController,
-                    label: 'Altura de rodilla',
-                    hintText: 'Altura en cm',
-                    icon: const Icon(Icons.ballot)),
-                TextFormFieldWidget(
-                    controller: _lrmController,
-                    label: 'Altura rodilla-maléolo externo',
-                    hintText: 'Longitud en cm',
-                    icon: const Icon(Icons.ballot)),
-                TextFormFieldWidget(
-                    controller: _wingSpanController,
-                    label: 'Altura por envergadura',
-                    hintText: 'Longitud en cm',
-                    icon: const Icon(Icons.ballot)),
-                    
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: ElevatedButton(
-                    key: const ValueKey('btnCalculateHeigth'),
-                    onPressed: () => updateHeight(),
-                    child: const Text('Calcular Altura'),
-                  ),
-                ),
-                    
-                //BODY COMPLEXION
-                Text(
-                  'Complexión corporal: $_bodyComplexion',
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                    
-                TextFormFieldWidget(
-                  label: 'Muñeca circunferencia',
-                  hintText: 'Longitud en mm',
-                  icon: const Icon(Icons.ballot),
-                  width: widthComponent * 0.4,
-                  height: heightComponent * 0.08,
-                  onChanged: updateBodyComposition,
-                  controller: _wristCircumference,
-                ),
-                    
-                const SizedBox(height: 12),
-                    
-                ElevatedButton(
-                  onPressed: () => updateBodyComplexity(),
-                  child: const Text('Calcular Complexión'),
-                ),
-                const SizedBox(height: 19),
-                    
-                OutlinedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      _showBCTable = !_showBCTable;
-                    });
-                  },
-                  label: const Text(
-                    'Mostrar/Ocultar tabla Complexión corporal',
-                  ),
-                  icon: const Icon(Icons.arrow_drop_down),
-                ),
-                Visibility(
-                  visible: _showBCTable,
-                  child: DataTable(
-                      columns: const <DataColumn>[
-                        DataColumn(label: Text('Complexión')),
-                        DataColumn(
-                          label: Text('Mujer'),
-                        ),
-                        DataColumn(
-                          label: Text('Hombre'),
-                        )
-                      ],
-                      rows: bodyComplexionTable
-                          .map((e) => DataRow(cells: [
-                                DataCell(Text(e[0].toString())),
-                                DataCell(Text(e[1].toString())),
-                                DataCell(Text(e[2].toString())),
-                              ]))
-                          .toList()),
-                ),
-                    
-                const SizedBox(height: 18),
-                    
-                // BODY COMPOSITION
-                Text(
-                  'Composición corporal: $_bodyComposition',
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-                    
-                OutlinedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      _showFolds = !_showFolds;
-                    });
-                  },
-                  label: const Text(
-                    'Mostrar/Ocultar Pliegues',
-                  ),
-                  icon: const Icon(Icons.arrow_drop_down),
-                ),
-                    
-                //FOLDS
-                Visibility(
-                  visible: _showFolds,
-                  child: Column(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(widget.title),
+        ),
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 18),
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          TextFormFieldWidget(
-                            label: 'Tríceps',
-                            hintText: 'Longitud en mm',
-                            width: widthComponent * 0.4,
-                            height: heightComponent * 0.08,
-                            controller: _fold1Controller,
-                          ),
-                          const SizedBox(width: 12),
-                          TextFormFieldWidget(
-                            label: 'Subescapular',
-                            hintText: 'Longitud en mm',
-                            width: widthComponent * 0.4,
-                            height: heightComponent * 0.08,
-                            controller: _fold2Controller,
-                          ),
-                        ],
+                      Text(
+                        'M',
+                        style: Theme.of(context).textTheme.headlineMedium,
                       ),
-                      Row(
-                        children: [
-                          TextFormFieldWidget(
-                            label: 'Suprailíaco',
-                            hintText: 'Longitud en mm',
-                            width: widthComponent * 0.4,
-                            height: heightComponent * 0.08,
-                            controller: _fold3Controller,
-                          ),
-                          const SizedBox(width: 12),
-                          TextFormFieldWidget(
-                            label: 'Abdominal',
-                            hintText: 'Longitud en mm',
-                            width: widthComponent * 0.4,
-                            height: heightComponent * 0.08,
-                            controller: _fold4Controller,
-                          ),
-                        ],
+                      Switch(
+                        value: _isFemale,
+                        thumbIcon: thumbIcon,
+                        activeColor: Theme.of(context).colorScheme.primary,
+                        inactiveThumbColor: Theme.of(context).colorScheme.primary,
+                        activeTrackColor:
+                            Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                        inactiveTrackColor:
+                            Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                        //inactiveThumbImage: Icon(Icons.thumb_up),
+                        onChanged: (bool value) => _changeGender(value),
                       ),
-                      Row(
-                        children: [
-                          TextFormFieldWidget(
-                            label: 'Pliege muslo anterior',
-                            hintText: 'Longitud en mm',
-                            width: widthComponent * 0.4,
-                            height: heightComponent * 0.08,
-                            controller: _fold5Controller,
-                          ),
-                          const SizedBox(width: 12),
-                          TextFormFieldWidget(
-                            label: 'Pliege pierna',
-                            hintText: 'Longitud en mm',
-                            width: widthComponent * 0.4,
-                            height: heightComponent * 0.08,
-                            controller: _fold6Controller,
-                          ),
-                        ],
+                      Text(
+                        'F',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                      SizedBox(
+                        width: widthComponent * 0.1,
+                      ),
+                      //EDAD
+                      const SizedBox(width: 14),
+                      TextFormFieldWidget(
+                        label: 'Edad',
+                        hintText: 'Longitud en cm',
+                        width: widthComponent * 0.4,
+                        height: heightComponent * 0.08,
+                        icon: const Icon(Icons.person),
+                        controller: _ageController,
                       ),
                     ],
                   ),
-                ),
-                    
-                const SizedBox(height: 12),
-                ElevatedButton(
-                  onPressed: () => updateBodyCompositionYuhasz(),
-                  child: const Text('Calcular Composición'),
-                ),
-                const SizedBox(height: 19),
-                    
-                // INDEX HIP-WAIST
-                Text(
-                  'Índice cintura-Cadera: $_iac',
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    TextFormFieldWidget(
-                      label: 'Abdomen circunferencia',
-                      hintText: 'Longitud en cm',
-                      width: widthComponent * 0.4,
-                      height: heightComponent * 0.08,
-                      onChanged: updateBodyComposition,
-                      controller: _waistCircunference,
+                  const SizedBox(height: 18),
+                  Row(
+                    children: [
+                      // ALTURA
+                      TextFormFieldWidget(
+                        label: 'Altura',
+                        hintText: 'Longitud en cm',
+                        width: widthComponent * 0.4,
+                        height: heightComponent * 0.08,
+                        icon: const Icon(Icons.ballot),
+                        onChanged: updateIMC,
+                        controller: _heightController,
+                      ),
+                      const SizedBox(width: 12),
+                      
+                      // PESO
+                      TextFormFieldWidget(
+                        label: 'Peso',
+                        hintText: 'Peso',
+                        icon: const Icon(Icons.ballot),
+                        width: widthComponent * 0.4,
+                        height: heightComponent * 0.08,
+                        onChanged: updateIMC,
+                        controller: _weightController,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                      
+                  // DATOS PRECALCULADOS
+                  Column(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'IMC: $_imc',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      Text(
+                        ' $_imcStatus',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    ],
+                  ),
+                      
+                  OutlinedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _showTable = !_showTable;
+                      });
+                    },
+                    label: const Text(
+                      'Mostrar/Ocultar tabla IMC',
                     ),
-                    const SizedBox(width: 12),
-                    TextFormFieldWidget(
-                      label: 'Cadera circunferencia',
+                    icon: const Icon(Icons.arrow_drop_down),
+                  ),
+                  Visibility(
+                    visible: _showTable,
+                    child: DataTable(
+                        columns: const <DataColumn>[
+                          DataColumn(label: Text('IMC')),
+                          DataColumn(
+                            label: Text('Clasificación'),
+                          )
+                        ],
+                        rows: imcTable.entries
+                            .map((e) => DataRow(cells: [
+                                  DataCell(Text(e.key)),
+                                  DataCell(Text(e.value.toString())),
+                                ]))
+                            .toList()),
+                  ),
+                      
+                  const SizedBox(height: 12),
+                      
+                  //Altura rodilla
+                  TextFormFieldWidget(
+                      controller: _arController,
+                      label: 'Altura de rodilla',
+                      hintText: 'Altura en cm',
+                      icon: const Icon(Icons.ballot)),
+                  TextFormFieldWidget(
+                      controller: _lrmController,
+                      label: 'Altura rodilla-maléolo externo',
                       hintText: 'Longitud en cm',
-                      width: widthComponent * 0.4,
-                      height: heightComponent * 0.08,
-                      onChanged: updateBodyComposition,
-                      controller: _hipsCircumference,
+                      icon: const Icon(Icons.ballot)),
+                  TextFormFieldWidget(
+                      controller: _wingSpanController,
+                      label: 'Altura por envergadura',
+                      hintText: 'Longitud en cm',
+                      icon: const Icon(Icons.ballot)),
+                      
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: ElevatedButton(
+                      key: const ValueKey('btnCalculateHeigth'),
+                      onPressed: () => updateHeight(),
+                      child: const Text('Calcular Altura'),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                      
+                  //BODY COMPLEXION
+                  Text(
+                    'Complexión corporal: $_bodyComplexion',
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                      
+                  TextFormFieldWidget(
+                    label: 'Muñeca circunferencia',
+                    hintText: 'Longitud en mm',
+                    icon: const Icon(Icons.ballot),
+                    width: widthComponent * 0.4,
+                    height: heightComponent * 0.08,
+                    onChanged: updateBodyComposition,
+                    controller: _wristCircumference,
+                  ),
+                      
+                  const SizedBox(height: 12),
+                      
+                  ElevatedButton(
+                    onPressed: () => updateBodyComplexity(),
+                    child: const Text('Calcular Complexión'),
+                  ),
+                  const SizedBox(height: 19),
+                      
+                  OutlinedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _showBCTable = !_showBCTable;
+                      });
+                    },
+                    label: const Text(
+                      'Mostrar/Ocultar tabla Complexión corporal',
+                    ),
+                    icon: const Icon(Icons.arrow_drop_down),
+                  ),
+                  Visibility(
+                    visible: _showBCTable,
+                    child: DataTable(
+                        columns: const <DataColumn>[
+                          DataColumn(label: Text('Complexión')),
+                          DataColumn(
+                            label: Text('Mujer'),
+                          ),
+                          DataColumn(
+                            label: Text('Hombre'),
+                          )
+                        ],
+                        rows: bodyComplexionTable
+                            .map((e) => DataRow(cells: [
+                                  DataCell(Text(e[0].toString())),
+                                  DataCell(Text(e[1].toString())),
+                                  DataCell(Text(e[2].toString())),
+                                ]))
+                            .toList()),
+                  ),
+                      
+                  const SizedBox(height: 18),
+                      
+                  // BODY COMPOSITION
+                  Text(
+                    'Composición corporal: $_bodyComposition',
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
+                      
+                  OutlinedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _showFolds = !_showFolds;
+                      });
+                    },
+                    label: const Text(
+                      'Mostrar/Ocultar Pliegues',
+                    ),
+                    icon: const Icon(Icons.arrow_drop_down),
+                  ),
+                      
+                  //FOLDS
+                  Visibility(
+                    visible: _showFolds,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            TextFormFieldWidget(
+                              label: 'Tríceps',
+                              hintText: 'Longitud en mm',
+                              width: widthComponent * 0.4,
+                              height: heightComponent * 0.08,
+                              controller: _fold1Controller,
+                            ),
+                            const SizedBox(width: 12),
+                            TextFormFieldWidget(
+                              label: 'Subescapular',
+                              hintText: 'Longitud en mm',
+                              width: widthComponent * 0.4,
+                              height: heightComponent * 0.08,
+                              controller: _fold2Controller,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            TextFormFieldWidget(
+                              label: 'Suprailíaco',
+                              hintText: 'Longitud en mm',
+                              width: widthComponent * 0.4,
+                              height: heightComponent * 0.08,
+                              controller: _fold3Controller,
+                            ),
+                            const SizedBox(width: 12),
+                            TextFormFieldWidget(
+                              label: 'Abdominal',
+                              hintText: 'Longitud en mm',
+                              width: widthComponent * 0.4,
+                              height: heightComponent * 0.08,
+                              controller: _fold4Controller,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            TextFormFieldWidget(
+                              label: 'Pliege muslo anterior',
+                              hintText: 'Longitud en mm',
+                              width: widthComponent * 0.4,
+                              height: heightComponent * 0.08,
+                              controller: _fold5Controller,
+                            ),
+                            const SizedBox(width: 12),
+                            TextFormFieldWidget(
+                              label: 'Pliege pierna',
+                              hintText: 'Longitud en mm',
+                              width: widthComponent * 0.4,
+                              height: heightComponent * 0.08,
+                              controller: _fold6Controller,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                      
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: () => updateBodyCompositionYuhasz(),
+                    child: const Text('Calcular Composición'),
+                  ),
+                  const SizedBox(height: 19),
+                      
+                  // INDEX HIP-WAIST
+                  Text(
+                    'Índice cintura-Cadera: $_iac',
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      TextFormFieldWidget(
+                        label: 'Abdomen circunferencia',
+                        hintText: 'Longitud en cm',
+                        width: widthComponent * 0.4,
+                        height: heightComponent * 0.08,
+                        onChanged: updateBodyComposition,
+                        controller: _waistCircunference,
+                      ),
+                      const SizedBox(width: 12),
+                      TextFormFieldWidget(
+                        label: 'Cadera circunferencia',
+                        hintText: 'Longitud en cm',
+                        width: widthComponent * 0.4,
+                        height: heightComponent * 0.08,
+                        onChanged: updateBodyComposition,
+                        controller: _hipsCircumference,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
+        ),
+        bottomNavigationBar: NavigationBarMain(
+          currentPageIndex: 0,
         ),
       ),
     );

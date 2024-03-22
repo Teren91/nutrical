@@ -18,11 +18,6 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'NutriCal'),
-      // home: SafeArea(
-      //       minimum:const EdgeInsets.all(12),
-      //       child: Lottie.asset('assets/lottie/Heart.json'),
-      //     ),
-      
     );
   }
 }

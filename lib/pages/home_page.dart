@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:nutrical/pages/chat_page.dart';
+import 'package:nutrical/pages/formula_page.dart';
+import 'package:nutrical/providers/routers.dart';
 import 'package:nutrical/widgets/heigth_form.dart';
 
 import 'package:lottie/lottie.dart';
+import 'package:nutrical/widgets/navigation_bar.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -13,15 +17,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int currentPageIndex = 0;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      onGenerateRoute: MyRouter.getRoute,
       home: Scaffold(
-        // appBar: AppBar(
-        //   backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        //   title: Text(widget.title),
-        // ),
-        body: Center(
+        
+        body: <Widget> [
+          Center(
           child: GestureDetector(
             onTap: () {
               Navigator.push(
@@ -31,13 +35,21 @@ class _MyHomePageState extends State<MyHomePage> {
                   pageBuilder: (context, animation, secondaryAnimation) => 
                   FadeTransition(
                     opacity: animation,
-                    child: const HeigthForm()
+                    child: HeigthForm(title: widget.title)
                   ),                    
                 ),
               );
             },
             child: Lottie.asset('assets/lottie/Heart.json'),              
           ),
+        ),
+
+        FormulaPage(title: widget.title),
+        ChatPage(title: widget.title)
+
+        ] [currentPageIndex],
+        bottomNavigationBar: NavigationBarMain(
+          currentPageIndex: currentPageIndex,
         ),
       ),
     );
