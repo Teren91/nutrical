@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 
 class NavigationBarMain extends StatefulWidget {
-  NavigationBarMain({super.key, required this.currentPageIndex});
+  NavigationBarMain(
+    {
+      super.key, 
+      required this.currentPageIndex,
+      required this.isTablet,
+    });
 
   int currentPageIndex = 0;
+  bool isTablet = false;
   @override
   State<NavigationBarMain> createState() => _NavigationBarMainState();
 }
@@ -21,7 +27,12 @@ class _NavigationBarMainState extends State<NavigationBarMain> {
 
         switch(index){
           case 0:
-            Navigator.pushReplacementNamed(context, '/heigth');
+            if(widget.isTablet)
+            {
+              Navigator.pushReplacementNamed(context, '/heigth');
+            } else{
+              Navigator.pushReplacementNamed(context, '/heigthTablet');
+            }
             break;
           case 1:
             Navigator.pushReplacementNamed(context, '/formula');

@@ -253,7 +253,7 @@ class HeigthFormState extends State<HeigthForm> {
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       SizedBox(
-                        width: widthComponent * 0.1,
+                        width: widthComponent * 0.15,
                       ),
                       //EDAD
                       const SizedBox(width: 14),
@@ -556,6 +556,7 @@ class HeigthFormState extends State<HeigthForm> {
         ),
         bottomNavigationBar: NavigationBarMain(
           currentPageIndex: 0,
+          isTablet:  widthComponent > 600 ? true : false,
         ),
       ),
     );

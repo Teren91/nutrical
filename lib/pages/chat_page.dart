@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrical/widgets/navigation_bar.dart';
 
@@ -22,6 +23,7 @@ class _ChatPageState extends State<ChatPage> {
         const Center(child: Text('CHAT')),
       bottomNavigationBar: NavigationBarMain(
           currentPageIndex: 2,
+          isTablet: kIsWeb,
         ),
     );
   }

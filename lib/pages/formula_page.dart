@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrical/widgets/navigation_bar.dart';
 
@@ -22,6 +23,7 @@ class _FormulaPageState extends State<FormulaPage> {
         const Center(child: Text('FORMULA')),
       bottomNavigationBar: NavigationBarMain(
           currentPageIndex: 1,
+          isTablet: kIsWeb,
         ),
     );
   }
