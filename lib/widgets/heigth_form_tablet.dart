@@ -1,5 +1,4 @@
 // Create a Form widget.
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrical/domain/usecases/body_complexion.dart';
 import 'package:nutrical/domain/usecases/body_composition.dart';
