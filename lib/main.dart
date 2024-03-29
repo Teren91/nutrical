@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:nutrical/pages/home_page.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-
-void main() => runApp(const MyApp());
+void main() {
+  dotenv.load();
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
