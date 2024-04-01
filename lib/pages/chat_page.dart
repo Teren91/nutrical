@@ -7,12 +7,15 @@ class ChatPage extends StatefulWidget {
   const ChatPage({super.key, required this.title});
 
   final String title;
+  
 
   @override
   State<ChatPage> createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
+
+
   final List<String> _messages = [];
   final TextEditingController _textController = TextEditingController();
 
@@ -23,11 +26,23 @@ class _ChatPageState extends State<ChatPage> {
     setState(() {
       _messages.add('User: $text');
     });
+    
+// try {
+//   await ChatGPTService().gptFunctionCalling();
 
+// } catch (e) {
+//   throw Exception(e);
+// }
+
+try {
+ 
     final String response = await ChatGPTService().getResponse(text);
-    setState(() {
+ setState(() {
       _messages.add('ChatGPT: $response');
     });
+} catch (e) {
+  throw Exception(e);
+}
   }
 
   @override

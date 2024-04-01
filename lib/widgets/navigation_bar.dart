@@ -29,9 +29,9 @@ class _NavigationBarMainState extends State<NavigationBarMain> {
           case 0:
             if(widget.isTablet)
             {
-              Navigator.pushReplacementNamed(context, '/heigth');
-            } else{
               Navigator.pushReplacementNamed(context, '/heigthTablet');
+            } else{
+              Navigator.pushReplacementNamed(context, '/heigth');
             }
             break;
           case 1:

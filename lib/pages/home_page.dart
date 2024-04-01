@@ -23,7 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     double widthComponent = MediaQuery.of(context).size.width;
-    bool isTablet = widthComponent > 600 ? true : false;
+    bool isTablet = widthComponent > 450 ? true : false;
 
     return MaterialApp(
       onGenerateRoute: MyRouter.getRoute,
