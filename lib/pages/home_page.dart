@@ -1,7 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:nutrical/pages/chat_page.dart';
-import 'package:nutrical/pages/formula_page.dart';
 import 'package:nutrical/providers/routers.dart';
 import 'package:nutrical/widgets/heigth_form.dart';
 
@@ -54,8 +52,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
 
-        FormulaPage(title: widget.title),
-        ChatPage(title: widget.title)
+        // FormulaPage(title: widget.title),
+        // ChatPage(title: widget.title)
 
         ] [currentPageIndex],
         bottomNavigationBar: NavigationBarMain(

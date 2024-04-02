@@ -9,6 +9,9 @@ import 'package:nutrical/widgets/navigation_bar.dart';
 
 import 'text_form_field_widget.dart';
 
+import 'package:nutrical/providers/routers.dart';
+
+
 class HeigthForm extends StatefulWidget {
   const HeigthForm({super.key, required this.title});
 
@@ -214,9 +217,10 @@ class HeigthFormState extends State<HeigthForm> {
     double widthComponent = MediaQuery.of(context).size.width;
     double heightComponent = MediaQuery.of(context).size.height;
 
-    return Material(
+    return MaterialApp(
+      onGenerateRoute: MyRouter.getRoute,
       
-      child: Scaffold(
+      home: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(widget.title),
@@ -556,7 +560,7 @@ class HeigthFormState extends State<HeigthForm> {
         ),
         bottomNavigationBar: NavigationBarMain(
           currentPageIndex: 0,
-          isTablet:  widthComponent > 600 ? true : false,
+          isTablet:  widthComponent > 450 ? true : false,
         ),
       ),
     );

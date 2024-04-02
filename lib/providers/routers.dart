@@ -20,6 +20,8 @@ class MyRouter {
         return MaterialPageRoute(builder: (context) => const ChatPage(title: 'Nutrical'));
       case '/heigthTablet':
         return MaterialPageRoute(builder: (context) => const HeigthFormTablet(title: 'Nutrical'));
+      case '/heigth':
+        return MaterialPageRoute(builder: (context) => const HeigthForm(title: 'Nutrical'));
       default:
         return MaterialPageRoute(builder: (context) => const HeigthForm(title: 'Nutrical'));
     }
