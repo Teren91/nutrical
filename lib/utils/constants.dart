@@ -17,3 +17,5 @@ List<List<dynamic>> bodyComplexionTable = [
   ['Grande', 10.5, 11.1]
 ];
 
+const int tabletWidth = 450;
+

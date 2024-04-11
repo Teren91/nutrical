@@ -2,23 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:nutrical/utils/constants.dart';
 import 'package:nutrical/widgets/widgets.dart';
 
-class FormulaPage extends StatefulWidget {
-  const FormulaPage({super.key, required this.title});
+class HeigthPage extends StatefulWidget {
+  const HeigthPage({super.key, required this.title});
 
   final String title;
-
   @override
-  State<FormulaPage> createState() => _FormulaPageState();
+  State<HeigthPage> createState() => _HeigthPageState();
 }
 
-class _FormulaPageState extends State<FormulaPage> {
-
+class _HeigthPageState extends State<HeigthPage> {
   @override
   Widget build(BuildContext context) {
     double widthComponent = MediaQuery.of(context).size.width;
 
     return widthComponent < tabletWidth 
-      ? FormulaForm(title: widget.title) 
-      : FormulaFormTablet(title: widget.title,);
+      ? HeigthForm(title: widget.title) 
+      : HeigthFormTablet(title: widget.title,);
   }
 }

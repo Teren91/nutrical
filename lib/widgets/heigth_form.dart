@@ -5,9 +5,8 @@ import 'package:nutrical/domain/usecases/body_composition.dart';
 import 'package:nutrical/domain/usecases/heigth_calculator.dart';
 import 'package:nutrical/domain/usecases/imc_calculator.dart';
 import 'package:nutrical/utils/constants.dart';
-import 'package:nutrical/widgets/navigation_bar.dart';
-
-import 'text_form_field_widget.dart';
+import 'package:nutrical/utils/functions.dart';
+import 'package:nutrical/widgets/widgets.dart';
 
 import 'package:nutrical/providers/routers.dart';
 
@@ -123,7 +122,7 @@ class HeigthFormState extends State<HeigthForm> {
     if (_weightController.text.isNotEmpty &&
         _heightController.text.isNotEmpty) {
       setState(() {
-        double formatHeigth = double.parse(_heightController.text) / 100;
+        double formatHeigth = double.parse(cleanText(_heightController.text)) / 100;
 
         _imc = imcCalculator.calculateIMC(
             double.parse(_weightController.text), formatHeigth);
@@ -263,7 +262,7 @@ class HeigthFormState extends State<HeigthForm> {
                       const SizedBox(width: 14),
                       TextFormFieldWidget(
                         label: 'Edad',
-                        hintText: 'Longitud en cm',
+                        hintText: 'Edad',
                         width: widthComponent * 0.4,
                         height: heightComponent * 0.08,
                         icon: const Icon(Icons.person),
@@ -277,7 +276,7 @@ class HeigthFormState extends State<HeigthForm> {
                       // ALTURA
                       TextFormFieldWidget(
                         label: 'Altura',
-                        hintText: 'Longitud en cm',
+                        hintText: 'En cm',
                         width: widthComponent * 0.4,
                         height: heightComponent * 0.08,
                         icon: const Icon(Icons.ballot),
@@ -357,12 +356,12 @@ class HeigthFormState extends State<HeigthForm> {
                   TextFormFieldWidget(
                       controller: _lrmController,
                       label: 'Altura rodilla-maléolo externo',
-                      hintText: 'Longitud en cm',
+                      hintText: 'En cm',
                       icon: const Icon(Icons.ballot)),
                   TextFormFieldWidget(
                       controller: _wingSpanController,
                       label: 'Altura por envergadura',
-                      hintText: 'Longitud en cm',
+                      hintText: 'En cm',
                       icon: const Icon(Icons.ballot)),
                       
                   Padding(
@@ -385,9 +384,9 @@ class HeigthFormState extends State<HeigthForm> {
                       
                   TextFormFieldWidget(
                     label: 'Muñeca circunferencia',
-                    hintText: 'Longitud en mm',
+                    hintText: 'En mm',
                     icon: const Icon(Icons.ballot),
-                    width: widthComponent * 0.4,
+                    //width: widthComponent * 0.4,
                     height: heightComponent * 0.08,
                     onChanged: updateBodyComposition,
                     controller: _wristCircumference,
@@ -462,7 +461,7 @@ class HeigthFormState extends State<HeigthForm> {
                           children: [
                             TextFormFieldWidget(
                               label: 'Tríceps',
-                              hintText: 'Longitud en mm',
+                              hintText: 'En mm',
                               width: widthComponent * 0.4,
                               height: heightComponent * 0.08,
                               controller: _fold1Controller,
@@ -470,7 +469,7 @@ class HeigthFormState extends State<HeigthForm> {
                             const SizedBox(width: 12),
                             TextFormFieldWidget(
                               label: 'Subescapular',
-                              hintText: 'Longitud en mm',
+                              hintText: 'En mm',
                               width: widthComponent * 0.4,
                               height: heightComponent * 0.08,
                               controller: _fold2Controller,
@@ -481,7 +480,7 @@ class HeigthFormState extends State<HeigthForm> {
                           children: [
                             TextFormFieldWidget(
                               label: 'Suprailíaco',
-                              hintText: 'Longitud en mm',
+                              hintText: 'En mm',
                               width: widthComponent * 0.4,
                               height: heightComponent * 0.08,
                               controller: _fold3Controller,
@@ -489,7 +488,7 @@ class HeigthFormState extends State<HeigthForm> {
                             const SizedBox(width: 12),
                             TextFormFieldWidget(
                               label: 'Abdominal',
-                              hintText: 'Longitud en mm',
+                              hintText: 'En mm',
                               width: widthComponent * 0.4,
                               height: heightComponent * 0.08,
                               controller: _fold4Controller,
@@ -499,16 +498,16 @@ class HeigthFormState extends State<HeigthForm> {
                         Row(
                           children: [
                             TextFormFieldWidget(
-                              label: 'Pliege muslo anterior',
-                              hintText: 'Longitud en mm',
+                              label: 'Muslo anterior',
+                              hintText: 'En mm',
                               width: widthComponent * 0.4,
                               height: heightComponent * 0.08,
                               controller: _fold5Controller,
                             ),
                             const SizedBox(width: 12),
                             TextFormFieldWidget(
-                              label: 'Pliege pierna',
-                              hintText: 'Longitud en mm',
+                              label: 'Pierna',
+                              hintText: 'En mm',
                               width: widthComponent * 0.4,
                               height: heightComponent * 0.08,
                               controller: _fold6Controller,
@@ -536,7 +535,7 @@ class HeigthFormState extends State<HeigthForm> {
                     children: [
                       TextFormFieldWidget(
                         label: 'Abdomen circunferencia',
-                        hintText: 'Longitud en cm',
+                        hintText: 'En cm',
                         width: widthComponent * 0.4,
                         height: heightComponent * 0.08,
                         onChanged: updateBodyComposition,
@@ -545,7 +544,7 @@ class HeigthFormState extends State<HeigthForm> {
                       const SizedBox(width: 12),
                       TextFormFieldWidget(
                         label: 'Cadera circunferencia',
-                        hintText: 'Longitud en cm',
+                        hintText: 'En cm',
                         width: widthComponent * 0.4,
                         height: heightComponent * 0.08,
                         onChanged: updateBodyComposition,
@@ -560,7 +559,7 @@ class HeigthFormState extends State<HeigthForm> {
         ),
         bottomNavigationBar: NavigationBarMain(
           currentPageIndex: 0,
-          isTablet:  widthComponent > 450 ? true : false,
+          isTablet:  widthComponent > tabletWidth ? true : false,
         ),
       ),
     );

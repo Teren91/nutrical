@@ -5,9 +5,8 @@ import 'package:nutrical/domain/usecases/body_composition.dart';
 import 'package:nutrical/domain/usecases/heigth_calculator.dart';
 import 'package:nutrical/domain/usecases/imc_calculator.dart';
 import 'package:nutrical/utils/constants.dart';
-import 'package:nutrical/widgets/navigation_bar.dart';
+import 'package:nutrical/widgets/widgets.dart';
 
-import 'text_form_field_widget.dart';
 
 class HeigthFormTablet extends StatefulWidget {
   const HeigthFormTablet({super.key, required this.title});
@@ -160,7 +159,7 @@ class HeigthFormTabletState extends State<HeigthFormTablet> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content:
-                Text('Introduce una altura y un circunferencia de muñeca')),
+                Text('Introduce una altura y un circunferencia de en cm')),
       );
     }
   }
@@ -250,7 +249,7 @@ class HeigthFormTabletState extends State<HeigthFormTablet> {
                         const SizedBox(width: 14),
                         TextFormFieldWidget(
                           label: 'Edad',
-                          hintText: 'Longitud en cm',
+                          hintText: 'Edad',
                           width: widthComponent * tabletWidthMultiplier,
                           height: heightComponent * tabletHeigthMultiplier,
                           icon: const Icon(Icons.person),
@@ -259,7 +258,7 @@ class HeigthFormTabletState extends State<HeigthFormTablet> {
                         const SizedBox(width: 12),
                         TextFormFieldWidget(
                           label: 'Altura',
-                          hintText: 'Longitud en cm',
+                          hintText: 'En cm',
                           width: widthComponent * tabletWidthMultiplier,
                           height: heightComponent * tabletHeigthMultiplier,
                           icon: const Icon(Icons.ballot),
@@ -334,7 +333,7 @@ class HeigthFormTabletState extends State<HeigthFormTablet> {
                         TextFormFieldWidget(
                           controller: _arController,
                           label: 'Altura de rodilla',
-                          hintText: 'Altura en cm',
+                          hintText: 'En cm',
                           icon: const Icon(Icons.ballot),
                           width: widthComponent * tabletWidthMultiplier,
                           height: heightComponent * tabletHeigthMultiplier,
@@ -343,7 +342,7 @@ class HeigthFormTabletState extends State<HeigthFormTablet> {
                         TextFormFieldWidget(
                           controller: _lrmController,
                           label: 'Altura rodilla-maléolo externo',
-                          hintText: 'Longitud en cm',
+                          hintText: 'En cm',
                           icon: const Icon(Icons.ballot),
                           width: widthComponent * tabletWidthMultiplier,
                           height: heightComponent * tabletHeigthMultiplier,
@@ -352,7 +351,7 @@ class HeigthFormTabletState extends State<HeigthFormTablet> {
                         TextFormFieldWidget(
                           controller: _wingSpanController,
                           label: 'Altura por envergadura',
-                          hintText: 'Longitud en cm',
+                          hintText: 'En cm',
                           icon: const Icon(Icons.ballot),
                           width: widthComponent * tabletWidthMultiplier,
                           height: heightComponent * tabletHeigthMultiplier,
@@ -379,10 +378,10 @@ class HeigthFormTabletState extends State<HeigthFormTablet> {
                     ),
 
                     TextFormFieldWidget(
-                      label: 'Muñeca circunferencia',
-                      hintText: 'Longitud en mm',
+                      label: 'Circunferencia',
+                      hintText: 'En mm',
                       icon: const Icon(Icons.ballot),
-                      width: widthComponent * tabletWidthMultiplier,
+                      //width: widthComponent * tabletWidthMultiplier,
                       height: heightComponent * tabletHeigthMultiplier,
                       onChanged: updateBodyComposition,
                       controller: _wristCircumference,
@@ -457,7 +456,7 @@ class HeigthFormTabletState extends State<HeigthFormTablet> {
                             children: [
                               TextFormFieldWidget(
                                 label: 'Tríceps',
-                                hintText: 'Longitud en mm',
+                                hintText: 'En mm',
                                 width: widthComponent * tabletWidthMultiplier,
                                 height:
                                     heightComponent * tabletHeigthMultiplier,
@@ -466,7 +465,7 @@ class HeigthFormTabletState extends State<HeigthFormTablet> {
                               const SizedBox(width: 12),
                               TextFormFieldWidget(
                                 label: 'Subescapular',
-                                hintText: 'Longitud en mm',
+                                hintText: 'En mm',
                                 width: widthComponent * tabletWidthMultiplier,
                                 height:
                                     heightComponent * tabletHeigthMultiplier,
@@ -475,7 +474,7 @@ class HeigthFormTabletState extends State<HeigthFormTablet> {
                               const SizedBox(width: 12),
                               TextFormFieldWidget(
                                 label: 'Suprailíaco',
-                                hintText: 'Longitud en mm',
+                                hintText: 'En mm',
                                 width: widthComponent * tabletWidthMultiplier,
                                 height:
                                     heightComponent * tabletHeigthMultiplier,
@@ -487,7 +486,7 @@ class HeigthFormTabletState extends State<HeigthFormTablet> {
                             children: [
                               TextFormFieldWidget(
                                 label: 'Abdominal',
-                                hintText: 'Longitud en mm',
+                                hintText: 'En mm',
                                 width: widthComponent * tabletWidthMultiplier,
                                 height:
                                     heightComponent * tabletHeigthMultiplier,
@@ -495,8 +494,8 @@ class HeigthFormTabletState extends State<HeigthFormTablet> {
                               ),
                               const SizedBox(width: 12),
                               TextFormFieldWidget(
-                                label: 'Pliege muslo anterior',
-                                hintText: 'Longitud en mm',
+                                label: 'Muslo anterior',
+                                hintText: 'En mm',
                                 width: widthComponent * tabletWidthMultiplier,
                                 height:
                                     heightComponent * tabletHeigthMultiplier,
@@ -504,8 +503,8 @@ class HeigthFormTabletState extends State<HeigthFormTablet> {
                               ),
                               const SizedBox(width: 12),
                               TextFormFieldWidget(
-                                label: 'Pliege pierna',
-                                hintText: 'Longitud en mm',
+                                label: 'Pierna',
+                                hintText: 'En mm',
                                 width: widthComponent * tabletWidthMultiplier,
                                 height:
                                     heightComponent * tabletHeigthMultiplier,
@@ -534,7 +533,7 @@ class HeigthFormTabletState extends State<HeigthFormTablet> {
                       children: [
                         TextFormFieldWidget(
                           label: 'Abdomen circunferencia',
-                          hintText: 'Longitud en cm',
+                          hintText: 'En cm',
                           width: widthComponent * tabletWidthMultiplier,
                           height: heightComponent * tabletHeigthMultiplier,
                           onChanged: updateBodyComposition,
@@ -543,7 +542,7 @@ class HeigthFormTabletState extends State<HeigthFormTablet> {
                         const SizedBox(width: 12),
                         TextFormFieldWidget(
                           label: 'Cadera circunferencia',
-                          hintText: 'Longitud en cm',
+                          hintText: 'En cm',
                           width: widthComponent * tabletWidthMultiplier,
                           height: heightComponent * tabletHeigthMultiplier,
                           onChanged: updateBodyComposition,
